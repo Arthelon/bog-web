@@ -12,6 +12,8 @@
   export let link = ''
   export let linkText = 'Learn more'
 
+  let imgContainer;
+
   const labels = [
     {
       label: 'In Design',
@@ -26,6 +28,16 @@
       color: '#FF8988',
     },
   ]
+
+  const lazy = (node, data) => {
+    const tempImg = new Image();
+    tempImg.setAttribute('src', data.src);
+    tempImg.setAttribute('alt', data.alt);
+    tempImg.onload = () => {
+      tempImg.setAttribute('class', node.getAttribute('class')); // set svelte class
+      imgContainer.replaceChild(tempImg, node);
+    }
+  }
   $: validLabel = labels.find(l => l.label === label)
 </script>
 
@@ -64,8 +76,8 @@
 </style>
 
 <Container {link}>
-  <div class="img-container">
-    <img src={img.src} alt={img.alt} />
+  <div class="img-container" bind:this={imgContainer}>
+    <img use:lazy={img} src={'./example-data/bfa-lazy.jpg'} alt={img.alt} />
   </div>
   <h3>{heading}</h3>
   <p>
